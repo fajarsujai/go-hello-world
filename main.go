@@ -23,13 +23,13 @@ func goDotEnvVariable(key string) string {
 
 func main() {
 	// godotenv package
-	dotenv := goDotEnvVariable("app")
-
+	appenv := goDotEnvVariable("APPENV")
+	apport := goDotEnvVariable("PORT")
 	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
-		fmt.Fprintf(w, "Hello "+dotenv)
+		fmt.Fprintf(w, "Update 1 dan Hello "+appenv)
 	})
-	fmt.Printf("Server running (port=8080), route: http://localhost:8080/hello\n")
-	if err := http.ListenAndServe(":8080", nil); err != nil {
+	fmt.Printf("Server running (port=" + apport + "), route: http://localhost:" + apport + "/hello\n")
+	if err := http.ListenAndServe(":"+apport, nil); err != nil {
 		log.Fatal(err)
 	}
 }
