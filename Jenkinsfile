@@ -10,8 +10,8 @@ pipeline {
             }
         }
 
-        
-        stage("Docker Version"){
+
+        stage("Kubectl Version"){
             steps{
                 script{
                     sh "kubectl version"
