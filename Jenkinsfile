@@ -2,10 +2,17 @@ pipeline {
     agent any
 
     stages{
-        stage("Test Jenkins"){
+        stage("Docker Version"){
             steps{
                 script{
-                    echo "Test Jenkins"
+                    sh "docker version"
+                }
+            }
+        },
+        stage("Docker Version"){
+            steps{
+                script{
+                    sh "kubectl version"
                 }
             }
         }
