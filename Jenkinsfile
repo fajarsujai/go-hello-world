@@ -2,19 +2,28 @@ pipeline {
     agent any
 
     stages{
-        stage("Docker Version"){
+        stage("Docker Build"){
             steps{
                 script{
-                    sh "docker version"
+                    sh "docker build -t fajarsujai/go-helloworld:${GIT_COMMIT} ."
                 }
             }
         }
 
 
-        stage("Kubectl Version"){
+        stage("Docker Push"){
             steps{
                 script{
-                    sh "kubectl version"
+                    sh "docker push fajarsujai/go-helloworld:${GIT_COMMIT}"
+                }
+            }
+        }
+
+
+        stage("Finish"){
+            steps{
+                script{
+                    sh "echo('berhsil push image docker')"
                 }
             }
         }
