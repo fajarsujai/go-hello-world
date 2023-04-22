@@ -5,7 +5,7 @@ pipeline {
         stage("Docker Build"){
             steps{
                 script{
-                    sh "docker build -t fajarsujai/go-helloworld:${GIT_COMMIT} ."
+                    sh "docker build -t fajarsujai/go-helloworld:${GIT_COMMIT} --build-arg BRANCH=develop --build-arg PORT=8001 ."
                 }
             }
         }
