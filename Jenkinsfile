@@ -28,19 +28,10 @@ pipeline {
         //     }
         // }
 
-
-        stage("Exec ansible docker"){
-            steps{
-                script{
-                    sh "docker run -it ansible"
-                }
-            }
-        }
-
         stage("Ansible version"){
             steps{
                 script{
-                    sh "ansible --version"
+                    sh "exec -it 3eb20105ab7c ansible --version"
                 }
             }
         }
