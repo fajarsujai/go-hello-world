@@ -31,7 +31,7 @@ pipeline {
         stage("Ansible version"){
             steps{
                 script{
-                    sh "exec -it 3eb20105ab7c ansible --version"
+                    sh "docker exec -it 3eb20105ab7c ansible --version"
                 }
             }
         }
