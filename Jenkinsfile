@@ -23,7 +23,7 @@ pipeline {
         stage("Finish"){
             steps{
                 script{
-                    sh "echo('berhsil push image docker')"
+                    echo("berhsil push image docker")
                 }
             }
         }
