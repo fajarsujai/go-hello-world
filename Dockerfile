@@ -38,4 +38,4 @@ RUN go build -o /hello_go_http
 EXPOSE ${PORT}
 
 # Run the app binary when we run the container
-ENTRYPOINT ["/hello_go_http"]
+ENTRYPOINT ["../hello_go_http"]

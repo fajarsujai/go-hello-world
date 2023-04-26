@@ -1,0 +1,45 @@
+- name: Play 1
+  hosts: all
+  vars:
+    - env_name: "{{ env_name | default('default_env') }}"
+    - proj_name: "{{ proj_name | default('default_project') }}"
+  tasks:
+    - name: Run if env develop
+      become: true
+      become_user: root
+      block:
+        - command: "docker build -t fajarsujai/{{proj_name}}:{{env_name}} --build-arg BRANCH=develop --build-arg PORT=8001 ."
+          register: v_docker_1
+        # - command: "docker push fajarsujai/{{proj_name}}:{{env_name}}"
+        #   register: v_docker_2
+        - debug:
+            msg: 
+              - "Docker build"
+              - '{{ v_docker_1.stdout_lines }}'
+              # - "Docker ps"
+              # - '{{ v_docker_2.stdout_lines }}'
+      when: env_name | regex_search("^[a-zA-Z0-9]+$")
+  
+    # - name: Run if env staging
+    #   become: true
+    #   become_user: root
+    #   command: "docker images"
+    #   register: v_docker
+    #   when: env_name | regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
+   
+    # - name: Run if env production
+    #   become: true
+    #   become_user: root
+    #   command: "docker images"
+    #   register: v_docker
+    #   when: env_name | regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
+   
+
+    # - name: Default
+    #   command: "echo 'default ansible'"
+    #   register: v_docker
+    #   when: env_name == 'default'
+    # - debug:
+    #       msg: '{{ v_docker.stdout }}'
+    
+    
