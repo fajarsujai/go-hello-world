@@ -15,7 +15,7 @@ FROM golang:1.16-buster AS builder
 #build-arg
 ARG BRANCH
 ARG PORT
-ARG PROJECT
+ARG PROJ_NAME
 
 # Create working directory under /app
 WORKDIR /app
@@ -30,7 +30,7 @@ RUN go mod download
 COPY *.go ./
 
 # Copy ENV
-COPY /home/vagrant/tools/apps/{{PROJECT}}/.env.${BRANCH} .env
+# COPY /go-hello-world/.env.${BRANCH} ./.env
 
 # Run the Go build and output binary under hello_go_http
 RUN go build -o /hello_go_http
@@ -39,4 +39,4 @@ RUN go build -o /hello_go_http
 EXPOSE ${PORT}
 
 # Run the app binary when we run the container
-ENTRYPOINT ["../hello_go_http"]
+ENTRYPOINT ["/hello_go_http"]
