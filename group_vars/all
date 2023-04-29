@@ -1,0 +1,4 @@
+    proj_name: default_project
+    u_repo_docker: fajarsujai
+    proj_port: 8001
+    proj_env: develop
