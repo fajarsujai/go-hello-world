@@ -1,13 +1,7 @@
-regex_search("^[a-zA-Z0-9]+$")
-
-regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
-
-regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
-
 - name: Play 1
   hosts: all
   tasks:
-    #Mengambil nama project
+      #Mengambil nama project
     - name: Get proj_name by git
       ansible.builtin.shell:
         cmd: basename $(pwd -P)
@@ -18,9 +12,9 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
         proj_name: "{{ proj_name.stdout }}"
     - debug:
         msg: "{{ proj_name }}"
-    #End Mengambil nama project
+     #End Mengambil nama project
 
-    #Mengambil tag repo develop
+      #Mengambil tag repo develop
     - name: Get tag_repo_dev by git
       command: git log --pretty=format:%h -1
       register: tag_repo_dev
@@ -28,13 +22,13 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
 
     - name: Set tag_repo_dev to variable
       set_fact:
-        proj_tag: "{{ tag_repo_dev.stdout }}"
+        proj_tag_dev: "{{ tag_repo_dev.stdout }}"
     - debug:
-        msg: "{{ proj_tag }}"
-      when: proj_env == 'develop' or proj_tag | regex_search("^[a-zA-Z0-9]+$")
-    #END Mengambil tag repo develop
+        msg: "{{ proj_tag_dev }}"
+      when: proj_env == 'develop' or proj_tag_dev | regex_search("^[a-zA-Z0-9]+$")
+      #END Mengambil tag repo develop
 
-    #Build & push images to docker (develop)
+      #Build & push images to docker (develop)
     - name: Run if env develop
       become: true
       become_user: root
@@ -42,9 +36,9 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
         - docker_login:
             username: "fajarsujai"
             password: "SeptemberRain$10"
-        - command: "docker build -t {{u_repo_docker}}/{{proj_name}}:{{proj_tag}} --build-arg BRANCH={{proj_env}} --build-arg PORT={{proj_port}}  ."
+        - command: "docker build -t {{u_repo_docker}}/{{proj_name}}:{{proj_tag_dev}} --build-arg BRANCH={{proj_env}} --build-arg PORT={{proj_port}}  ."
           register: v_docker_1
-        - command: "docker push {{u_repo_docker}}/{{proj_name}}:{{proj_tag}}"
+        - command: "docker push {{u_repo_docker}}/{{proj_name}}:{{proj_tag_dev}}"
           register: v_docker_2
         - debug:
             msg: 
@@ -52,21 +46,21 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
               - '{{ v_docker_1.stdout_lines }}'
               - "Docker push"
               - '{{ v_docker_2.stdout_lines }}'
-      when: proj_env == 'develop' or proj_env | regex_search("^[a-zA-Z0-9]+$")
-    #End Build & push images to docker (develop)
+      when: proj_env == 'develop' or proj_tag_dev | regex_search("^[a-zA-Z0-9]+$")
+      #End Build & push images to docker (develop)
 
       #Mengambil tag repo staging
     - name: Get tag_repo_sta by git
       command: git describe --abbrev=0 --tags --match "rc*"
       register: tag_repo_sta
-      when: proj_env == 'staging' or proj_tag | regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
+      when: proj_env == 'staging' or proj_tag_sta | regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
 
     - name: Set tag_repo_sta to variable
       set_fact:
-        proj_tag: "{{ tag_repo_sta.stdout }}"
+        proj_tag_sta: "{{ tag_repo_sta.stdout }}"
     - debug:
-        msg: "{{ proj_tag }}"
-      when: proj_env == 'staging' or proj_tag | regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
+        msg: "{{ proj_tag_sta }}"
+      when: proj_env == 'staging' or proj_tag_sta | regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
       #End mengambil tag repo staging
 
     #Build & push images to docker (staging)
@@ -74,13 +68,12 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
       become: true
       become_user: root
       block:
-        - 
         - docker_login:
             username: "fajarsujai"
             password: "SeptemberRain$10"
-        - command: "docker build -t {{u_repo_docker}}/{{proj_name}}:{{proj_tag}} --build-arg BRANCH={{proj_env}} --build-arg PORT={{proj_port}}  ."
+        - command: "docker build -t {{u_repo_docker}}/{{proj_name}}:{{proj_tag_sta}} --build-arg BRANCH={{proj_env}} --build-arg PORT={{proj_port}}  ."
           register: v_docker_1
-        - command: "docker push {{u_repo_docker}}/{{proj_name}}:{{proj_tag}}"
+        - command: "docker push {{u_repo_docker}}/{{proj_name}}:{{proj_tag_sta}}"
           register: v_docker_2
         - debug:
             msg: 
@@ -88,7 +81,7 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
               - '{{ v_docker_1.stdout_lines }}'
               - "Docker push"
               - '{{ v_docker_2.stdout_lines }}'
-      when: proj_env == 'staging' or proj_tag | regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
+      when: proj_env == 'staging' or proj_tag_sta | regex_search("^rc\-[0-9]+\.[0-9]+\.[0-9]+$")
       #End build & push images to docker (staging)
  
 
@@ -96,14 +89,14 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
     - name: Get tag_repo_prod by git
       command: git describe --abbrev=0 --tags --match "v*"
       register: tag_repo_prod
-      when: proj_env == 'production' or proj_tag | regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
+      when: proj_env == 'production' or proj_tag_prod | regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
 
     - name: Set tag_repo_prod to variable
       set_fact:
-        proj_tag: "{{ tag_repo_prod.stdout }}"
+        proj_tag_prod: "{{ tag_repo_prod.stdout }}"
     - debug:
-        msg: "{{ proj_tag }}"
-      when: proj_env == 'production' or proj_tag | regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
+        msg: "{{ proj_tag_prod }}"
+      when: proj_env == 'production' or proj_tag_prod | regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
     #End Mengambil tag repo production
     
     #Build & push images to docker (production)
@@ -114,9 +107,9 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
         - docker_login:
             username: "fajarsujai"
             password: "SeptemberRain$10"
-        - command: "docker build -t {{u_repo_docker}}/{{proj_name}}:{{proj_tag}} --build-arg BRANCH={{proj_env}} --build-arg PORT={{proj_port}}  ."
+        - command: "docker build -t {{u_repo_docker}}/{{proj_name}}:{{proj_tag_prod}} --build-arg BRANCH={{proj_env}} --build-arg PORT={{proj_port}}  ."
           register: v_docker_1
-        - command: "docker push {{u_repo_docker}}/{{proj_name}}:{{proj_tag}}"
+        - command: "docker push {{u_repo_docker}}/{{proj_name}}:{{proj_tag_prod}}"
           register: v_docker_2
         - debug:
             msg: 
@@ -124,7 +117,7 @@ regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
               - '{{ v_docker_1.stdout_lines }}'
               - "Docker push"
               - '{{ v_docker_2.stdout_lines }}'
-      when: proj_env == 'production' or proj_tag | regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
+      when: proj_env == 'production' or proj_tag_prod | regex_search("^v[0-9]+\.[0-9]+\.[0-9]+$")
       #End Build & push images to docker (production)
     
     
