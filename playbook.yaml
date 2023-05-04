@@ -63,6 +63,7 @@
         msg: "{{ proj_tag_sta }}"
       #End mengambil tag repo staging
 
+
     #Build & push images to docker manual (staging)
     - name: Run if env staging
       become: true
