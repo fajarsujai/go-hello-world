@@ -28,13 +28,13 @@ pipeline {
         //     }
         // }
 
-        stage("Run ansible playbook"){
-            steps{
-                script{
-                   sh "docker run ansible ansible-playbook -i inventory/inventory.yaml -e 'proj_env=develop' playbook.yaml"
-                }
-            }
-        }
+        // stage("Run ansible playbook"){
+        //     steps{
+        //         script{
+        //            sh "docker run ansible ansible-playbook -i inventory/inventory.yaml -e 'proj_env=develop' playbook.yaml"
+        //         }
+        //     }
+        // }
 
         // stage("Docker version"){
         //     steps{
