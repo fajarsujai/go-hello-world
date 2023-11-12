@@ -1,13 +1,3 @@
-# FROM golang:onbuild
-
-# ARG BRANCH
-# ARG PORT
-
-# COPY .env.${BRANCH} /go/src/app/.env
-
-# EXPOSE ${PORT}
-
-
 # Create build stage based on buster image
 FROM golang:1.16-buster AS builder
 
