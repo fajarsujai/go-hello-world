@@ -30,13 +30,13 @@ RUN go mod download
 COPY *.go ./
 
 # Copy ENV
-# COPY /go-hello-world/.env.${BRANCH} ./.env
+COPY ./.env ./.env
 
 # Run the Go build and output binary under hello_go_http
 RUN go build -o /hello_go_http
 
 # Make sure to expose the port the HTTP server is using
-EXPOSE ${PORT}
+EXPOSE 8000
 
 # Run the app binary when we run the container
 ENTRYPOINT ["/hello_go_http"]
