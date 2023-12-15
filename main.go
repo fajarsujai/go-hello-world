@@ -16,10 +16,19 @@ func main() {
 	// godotenv package
 	appenv := os.Getenv("APPENV")
 	apport := os.Getenv("PORT")
+	name := os.Getenv("NAME")
+	age := os.Getenv("AGE")
 	http.HandleFunc("/hello", func(w http.ResponseWriter, r *http.Request) {
 		fmt.Fprintf(w, "Update 1 dan Hello "+appenv)
 	})
-	fmt.Printf("Server running (port=" + apport + "), route: http://localhost:" + apport + "/hello\n")
+
+	http.HandleFunc("/contact", func(w http.ResponseWriter, r *http.Request) {
+		fmt.Fprintf(w, "Nama "+name)
+		fmt.Fprintf(w, "Nama "+age)
+
+	})
+
+	fmt.Printf("Server running (port=" + apport + "), route: http://localhost:" + apport)
 	if err := http.ListenAndServe(":"+apport, nil); err != nil {
 		log.Fatal(err)
 	}

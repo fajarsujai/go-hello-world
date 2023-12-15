@@ -1,0 +1,28 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: ghw-deployment
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: ghw-app
+  template:
+    metadata:
+      labels:
+        app: ghw-app
+    spec:
+      containers:
+      - name: ghw-container
+        image: fajarsujailoyato/go-hello-world:v1
+        env:
+        - name: APPENV
+          valueFrom:
+            configMapKeyRef:
+              name: cm-ghw
+              key: APPENV # ubah dengan kunci yang ingin Anda akses dari ConfigMap
+        - name: PORT
+          valueFrom:
+            configMapKeyRef:
+              name: cm-ghw
+              key: PORT
