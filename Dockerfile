@@ -3,7 +3,7 @@ FROM golang:1.20-buster AS builder
 
 
 #build-arg
-# ARG BRANCH
+ARG BRANCH
 ARG PORT
 # ARG PROJ_NAME
 
@@ -17,14 +17,14 @@ COPY go.* ./
 RUN go mod download
 
 # Copy over Go source code
-# COPY *.go ./
-COPY . .
+COPY *.go ./
+# COPY . .
 
 # Install dependencies
 RUN go get -u github.com/joho/godotenv
 
 # Copy ENV
-# COPY .env.${BRANCH} .env
+COPY .env.${BRANCH} .env
 
 # Run the Go build and output binary under hello_go_http
 RUN go build -o /hello_go_http
